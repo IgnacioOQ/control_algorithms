@@ -63,27 +63,98 @@ If you want to teach an agent a new language (like JAX) or technique:
 
 ### Project Overview
 
+**Ab Initio Reinforcement Learning Simulation System**
 
-The project follows a modular "Cookiecutter Data Science" structure, separating data ingestion, processing, and model training into distinct, reproducible pipelines.
+A from-scratch RL ecosystem implementing 3 simulation environments and 4 agent architectures without high-level RL libraries (no Gymnasium, Stable Baselines). All state transitions, gradient updates, and stochastic processes are explicitly defined for maximum transparency and educational value.
+
+**Philosophy**: Explicit State-Space Orchestration — every mathematical bound, transition dynamic, and reward manifold is explicitly coded.
+
+**Tech Stack**: Python, NumPy, PyTorch (for neural network agents)
 
 ### Setup & Testing
-t` to execute unit tests in `tests/`.
+
+```bash
+# Install dependencies
+pip install numpy torch pytest
+
+# Run all tests
+python -m pytest tests/ -v
+
+# Run specific environment/agent training
+python -m src.main --env server_load --agent dqn --episodes 100
+```
 
 ### Key Architecture & Logic
 
-#### 1. Data Pipelines (`src/data`)
+#### 1. Environments (`src/envs/`)
 
-### 2. Environments
+| Environment | Dynamics | State Vector | Action Space |
+|-------------|----------|--------------|--------------|
+| **Server Load** (`server_load.py`) | M/M/k queueing, Discrete Event Simulation | Queue lengths, server status, arrival rate, recent latency | Discrete (route to server k) |
+| **Smart Grid** (`smart_grid.py`) | BESS with efficiency losses, OU price process | SoC, load, generation, price, price forecast | Continuous (charge/discharge power) |
+| **Homeostasis** (`homeostasis.py`) | Bergman minimal model (3 ODEs), RK4 integration | Glucose, Remote Insulin, Plasma Insulin | Continuous (insulin infusion rate) |
 
-#### 3. Agents
+#### 2. Agents (`src/agents/`)
+
+| Agent | Algorithm | Action Type | Key Components |
+|-------|-----------|-------------|----------------|
+| **LinUCB** (`bandit.py`) | Disjoint Contextual Bandit | Discrete | Sherman-Morrison O(d²) updates, UCB selection |
+| **DQN** (`dqn.py`) | Deep Q-Network | Discrete | Replay Buffer, Target Network, Huber Loss, Double DQN |
+| **MCTS** (`mcts.py`) | Monte Carlo Tree Search | Discrete | PUCT selection, Rollout policy, Backpropagation |
+| **PPO** (`ppo.py`) | Proximal Policy Optimization | Continuous | Actor-Critic, GAE, Clipped surrogate objective |
+
+#### 3. Utilities (`src/utils/`)
+
+- `math_ops.py`: RK4 integration, Sherman-Morrison formula, Online Normalizer (Welford)
+- `seeding.py`: Global and per-environment RNG management
+- `logger.py`: CSV/TensorBoard logging
 
 ### Key Files and Directories
 
 #### Directory Structure
 
+```
+control_algorithms/
+├── src/
+│   ├── envs/           # Simulation environments
+│   │   ├── base.py     # SimulationEnvironment protocol
+│   │   ├── server_load.py
+│   │   ├── smart_grid.py
+│   │   └── homeostasis.py
+│   ├── agents/         # RL agents
+│   │   ├── base.py     # BaseAgent interface
+│   │   ├── bandit.py   # LinUCB
+│   │   ├── dqn.py
+│   │   ├── mcts.py
+│   │   └── ppo.py
+│   ├── utils/          # Shared utilities
+│   │   ├── math_ops.py
+│   │   ├── seeding.py
+│   │   └── logger.py
+│   ├── config.py       # Hyperparameter configs
+│   └── main.py         # Training orchestrator
+└── tests/              # Unit and integration tests
+```
 
 #### File Dependencies & Logic
 
+```
+main.py
+├── config.py (hyperparameters)
+├── envs/base.py → server_load.py, smart_grid.py, homeostasis.py
+├── agents/base.py → bandit.py, dqn.py, mcts.py, ppo.py
+└── utils/ (math_ops.py, seeding.py, logger.py)
+```
+
+**Immutable Dependencies**: `utils/math_ops.py` provides core algorithms used by multiple modules (RK4 for homeostasis, Sherman-Morrison for LinUCB, Normalizer for PPO).
 
 **Testing & Verification:**
+
+| Test Suite | File | Verifies |
+|------------|------|----------|
+| Math Operations | `tests/test_math_ops.py` | RK4 accuracy, Sherman-Morrison correctness, Normalizer convergence |
+| Environments | `tests/test_envs.py` | reset/step contracts, state shapes, reward bounds, seed reproducibility |
+| Agents | `tests/test_agents.py` | Interface compliance, action selection, buffer ops, update mechanics |
+
+**Integration Tests**: Each agent-environment pair runs 10-episode smoke tests via `main.py`.
 
