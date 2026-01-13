@@ -17,6 +17,67 @@ from .base import BaseAgent
 from ..utils.math_ops import sherman_morrison_update
 
 
+class RandomAgent(BaseAgent):
+    """Random action selection baseline agent.
+
+    Selects actions uniformly at random, ignoring the state.
+    Useful as a baseline for comparing against learned policies.
+
+    Attributes:
+        n_actions: Number of discrete actions available.
+    """
+
+    def __init__(self, n_actions: int, name: str = "Random"):
+        """Initialize the Random agent.
+
+        Args:
+            n_actions: Number of discrete actions available.
+            name: Agent identifier.
+        """
+        super().__init__(name=name)
+        self.n_actions = n_actions
+
+    def select_action(
+        self, state: np.ndarray, explore: bool = True
+    ) -> int:
+        """Select a random action.
+
+        Args:
+            state: Current state (ignored).
+            explore: Whether to explore (ignored - always random).
+
+        Returns:
+            Randomly selected action index.
+        """
+        return np.random.randint(0, self.n_actions)
+
+    def store(
+        self,
+        state: np.ndarray,
+        action: Union[int, np.ndarray],
+        reward: float,
+        next_state: np.ndarray,
+        done: bool,
+    ) -> None:
+        """Store transition (no-op for random agent)."""
+        pass
+
+    def update(self) -> Dict[str, float]:
+        """Update the model (no-op for random agent)."""
+        return {}
+
+    def ready_to_train(self) -> bool:
+        """Random agent never trains."""
+        return False
+
+    def get_config(self) -> Dict[str, Any]:
+        """Get agent configuration."""
+        return {
+            **super().get_config(),
+            "n_actions": self.n_actions,
+        }
+
+
 class LinUCBAgent(BaseAgent):
     """Disjoint LinUCB Contextual Bandit Agent.
 
