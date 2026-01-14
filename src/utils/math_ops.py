@@ -99,7 +99,7 @@ def sherman_morrison_update(
     """
     x = x.reshape(-1, 1)  # Ensure column vector (d, 1)
     A_inv_x = A_inv @ x  # (d, 1)
-    denominator = 1.0 + float(x.T @ A_inv_x)  # Scalar
+    denominator = 1.0 + (x.T @ A_inv_x).item()  # Scalar
 
     if denominator < 1e-12:
         # Numerical stability: skip update if denominator is too small

@@ -196,7 +196,11 @@ class TestHomeostasisEnv:
 
     def test_insulin_affects_glucose(self, env):
         """Test that insulin infusion lowers glucose."""
-        env.reset()
+        # Reset with seed to ensure no random meal disturbance during test
+        env.reset(seed=42)
+
+        # Disable meals for this test to isolate insulin effect
+        env.config.meal_probability = 0.0
         
         # Get initial glucose
         initial_G = env.state[0]
@@ -207,8 +211,9 @@ class TestHomeostasisEnv:
         
         final_G = env.state[0]
         
-        # Glucose should decrease (or at least not increase significantly)
-        assert final_G <= initial_G + 20  # Allow some tolerance for RK4
+        # Glucose should decrease with max insulin (since we disabled meals)
+        # Even with basal production, max insulin should drive it down or keep it stable
+        assert final_G <= initial_G, f"Glucose rose from {initial_G} to {final_G} despite max insulin"
 
     def test_hypoglycemia_penalty(self, env):
         """Test that hypoglycemia incurs large penalty."""
