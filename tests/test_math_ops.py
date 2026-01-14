@@ -74,7 +74,8 @@ class TestRK4Integration:
         state = np.array([0.0])
         
         # Apply constant control
-        for _ in range(100):
+        # Need enough steps to converge (time constant = 10s, running for 100s = 1000 steps * 0.1)
+        for _ in range(1000):
             state = rk4_step_with_control(state, 0.1, derivatives, control=1.0, disturbance=0.0)
         
         # Should converge to steady state: 0 = -0.1*x + 1 => x = 10
