@@ -70,3 +70,18 @@
         - **Environment**: numpy 1.23.5, torch 2.2.2, pytest 7.1.2.
     *   **Status**: Codebase is **HEALTHY**. No issues found.
     *   **Documentation**: Updated `HOUSEKEEPING.md` with latest report.
+
+*   **2026-01-21**: Created CONTROL_AGENT.md (Claude Code CLI - Opus 4.5).
+    *   **Task**: Create agent instruction file for control theory implementations.
+    *   **Actions Performed**:
+        - Analyzed existing agent instruction files (`LINEARIZE_AGENT.md`, `MC_AGENT.md`) for format.
+        - Reviewed codebase structure: environments, agents, and utilities.
+        - Created `AI_AGENTS/CONTROL_AGENT.md` with comprehensive instructions for:
+            - Phase 1: Classical Controllers (PID, threshold/heuristic)
+            - Phase 2: Optimal Control (LQR, MPC)
+            - Phase 3: Hybrid Control-RL Methods (Residual Policy, CBF Safety)
+        - Included environment-specific guidance for Homeostasis, Smart Grid, Server Load.
+        - Added utility function specifications, testing strategy, and implementation checklist.
+    *   **Results**:
+        - Created `AI_AGENTS/CONTROL_AGENT.md` (~450 lines).
+    *   **Status**: Documentation complete. Ready for implementation.
