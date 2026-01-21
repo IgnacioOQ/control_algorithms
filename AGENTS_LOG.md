@@ -121,3 +121,18 @@
             - `src/controllers/mpc.py`
             - `tests/test_controllers.py`
     *   **Status**: Implementation complete. Controllers ready for use with environments.
+
+*   **2026-01-21**: Housekeeping protocol with controllers update (Claude Code CLI - Opus 4.5).
+    *   **Task**: Update AGENTS.md and run housekeeping verification after controllers implementation.
+    *   **Actions Performed**:
+        - Updated `AGENTS.md` with new controllers module documentation:
+            - Added Section 3: Controllers (`src/controllers/`) with PID, LQR, MPC descriptions
+            - Updated directory structure to include `controllers/` and `AI_AGENTS/`
+            - Updated dependency tree and test suite table
+        - Verified dependency network: all 23 source files present, all imports resolve correctly.
+        - Ran full test suite: `python -m pytest tests/ -v`.
+    *   **Results**:
+        - **Tests**: 87/87 PASSED (4.33s).
+        - **Files**: 23 source files in `src/`, 5 test files in `tests/`.
+        - **Environment**: numpy 1.23.5, torch 2.2.2, pytest 7.1.2, scipy 1.11.4.
+    *   **Status**: Codebase is **HEALTHY**. All tests pass. Documentation updated.

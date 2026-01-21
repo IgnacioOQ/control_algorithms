@@ -103,7 +103,24 @@ python -m src.main --env server_load --agent dqn --episodes 100
 | **MCTS** (`mcts.py`) | Monte Carlo Tree Search | Discrete | PUCT selection, Rollout policy, Backpropagation |
 | **PPO** (`ppo.py`) | Proximal Policy Optimization | Continuous | Actor-Critic, GAE, Clipped surrogate objective |
 
-#### 3. Utilities (`src/utils/`)
+#### 3. Controllers (`src/controllers/`)
+
+Classical and optimal control methods that implement the `BaseAgent` interface for fair comparison with RL agents.
+
+| Controller | Algorithm | Action Type | Key Components |
+|------------|-----------|-------------|----------------|
+| **PID** (`pid.py`) | Proportional-Integral-Derivative | Continuous | Anti-windup, derivative filtering, ZN/Cohen-Coon tuning |
+| **LQR** (`lqr.py`) | Linear Quadratic Regulator | Continuous | DARE solver, controllability checks, finite-horizon variant |
+| **MPC** (`mpc.py`) | Model Predictive Control | Continuous | Receding horizon, state/control constraints, warm-starting |
+
+**Use Cases:**
+- **PID**: Homeostasis glucose regulation (setpoint tracking)
+- **LQR**: Smart Grid SoC regulation (linearized optimal control)
+- **MPC**: Both environments (constrained nonlinear optimization)
+
+See `AI_AGENTS/CONTROL_AGENT.md` for detailed implementation guidance.
+
+#### 5. Utilities (`src/utils/`)
 
 - `math_ops.py`: RK4 integration, Sherman-Morrison formula, Online Normalizer (Welford)
 - `seeding.py`: Global and per-environment RNG management
@@ -127,13 +144,22 @@ control_algorithms/
 │   │   ├── dqn.py
 │   │   ├── mcts.py
 │   │   └── ppo.py
+│   ├── controllers/    # Classical/optimal control
+│   │   ├── base.py     # BaseController (extends BaseAgent)
+│   │   ├── pid.py      # PID with anti-windup
+│   │   ├── lqr.py      # LQR with DARE solver
+│   │   └── mpc.py      # Model Predictive Control
 │   ├── utils/          # Shared utilities
 │   │   ├── math_ops.py
 │   │   ├── seeding.py
 │   │   └── logger.py
 │   ├── config.py       # Hyperparameter configs
 │   └── main.py         # Training orchestrator
-└── tests/              # Unit and integration tests
+├── tests/              # Unit and integration tests
+└── AI_AGENTS/          # Agent instruction files
+    ├── LINEARIZE_AGENT.md
+    ├── MC_AGENT.md
+    └── CONTROL_AGENT.md
 ```
 
 #### File Dependencies & Logic
@@ -143,6 +169,7 @@ main.py
 ├── config.py (hyperparameters)
 ├── envs/base.py → server_load.py, smart_grid.py, homeostasis.py
 ├── agents/base.py → bandit.py, dqn.py, mcts.py, ppo.py
+├── controllers/base.py → pid.py, lqr.py, mpc.py
 └── utils/ (math_ops.py, seeding.py, logger.py)
 ```
 
@@ -155,6 +182,7 @@ main.py
 | Math Operations | `tests/test_math_ops.py` | RK4 accuracy, Sherman-Morrison correctness, Normalizer convergence |
 | Environments | `tests/test_envs.py` | reset/step contracts, state shapes, reward bounds, seed reproducibility |
 | Agents | `tests/test_agents.py` | Interface compliance, action selection, buffer ops, update mechanics |
+| Controllers | `tests/test_controllers.py` | PID response, LQR stability, MPC constraints, DARE solver |
 
 **Integration Tests**: Each agent-environment pair runs 10-episode smoke tests via `main.py`.
 
