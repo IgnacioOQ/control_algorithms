@@ -85,3 +85,39 @@
     *   **Results**:
         - Created `AI_AGENTS/CONTROL_AGENT.md` (~450 lines).
     *   **Status**: Documentation complete. Ready for implementation.
+
+*   **2026-01-21**: Implemented controllers module (Claude Code CLI - Opus 4.5).
+    *   **Task**: Create `src/controllers/` with PID, LQR (DARE solver), and MPC implementations.
+    *   **Actions Performed**:
+        - Created `src/controllers/` directory with module structure.
+        - Implemented `src/controllers/base.py`: `BaseController` class extending `BaseAgent` interface.
+        - Implemented `src/controllers/pid.py`: `PIDController` with:
+            - Anti-windup (integrator clamping + back-calculation)
+            - Derivative-on-measurement (avoids derivative kick)
+            - Optional derivative filtering (low-pass)
+            - Ziegler-Nichols and Cohen-Coon tuning factory methods
+        - Implemented `src/controllers/lqr.py`:
+            - Pure NumPy DARE solver (iterative Riccati)
+            - `LQRController` with optimal gain computation
+            - `FiniteHorizonLQR` with time-varying gains
+            - Utility functions: `discretize_system`, `check_controllability`, `check_stabilizability`
+        - Implemented `src/controllers/mpc.py`:
+            - `MPCController` with scipy SLSQP backend
+            - Support for nonlinear dynamics, state/control constraints
+            - Warm-starting from previous solution
+            - `LinearMPC` subclass for efficient QP formulation
+        - Created `tests/test_controllers.py` with 30 unit tests covering:
+            - PID: proportional, integral, derivative, anti-windup, tuning methods
+            - LQR: stability, reference tracking, DARE correctness
+            - MPC: linear/nonlinear dynamics, constraints, receding horizon
+            - Integration tests: step response, LQR vs MPC equivalence
+    *   **Results**:
+        - **Tests**: 87/87 PASSED (57 original + 30 new controller tests).
+        - **Files Created**:
+            - `src/controllers/__init__.py`
+            - `src/controllers/base.py`
+            - `src/controllers/pid.py`
+            - `src/controllers/lqr.py`
+            - `src/controllers/mpc.py`
+            - `tests/test_controllers.py`
+    *   **Status**: Implementation complete. Controllers ready for use with environments.
