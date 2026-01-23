@@ -136,3 +136,33 @@
         - **Files**: 23 source files in `src/`, 5 test files in `tests/`.
         - **Environment**: numpy 1.23.5, torch 2.2.2, pytest 7.1.2, scipy 1.11.4.
     *   **Status**: Codebase is **HEALTHY**. All tests pass. Documentation updated.
+
+*   **2026-01-23**: Implemented Stock Management environment and simulation (Claude Code CLI - Opus 4.5).
+    *   **Task**: Create stock management environment and simulation comparing MPC planner vs RL agent.
+    *   **Actions Performed**:
+        - Created `src/envs/stock_management.py`: Multi-item inventory management environment with:
+            - Multiple item types with configurable decay times, storage sizes, costs
+            - Storage capacity constraint
+            - Stochastic demand (Poisson process)
+            - FIFO spoilage (oldest items sold/spoiled first)
+            - Age tracking per inventory slot
+            - Continuous action space (order quantities)
+            - MPC-compatible dynamics and cost functions
+        - Created `src/simulations/` module with:
+            - `stock_management_sim.py`: Comparison simulation framework
+            - `StockManagementMPC`: MPC wrapper using environment's dynamics model
+            - `run_mpc_simulation()`: Evaluate MPC planner performance
+            - `run_ppo_simulation()`: Train and evaluate PPO agent
+            - `run_comparison()`: Head-to-head comparison with detailed metrics
+        - Updated `src/envs/__init__.py` to export new environment classes.
+    *   **Results**:
+        - **Files Created**:
+            - `src/envs/stock_management.py`
+            - `src/simulations/__init__.py`
+            - `src/simulations/stock_management_sim.py`
+        - **Environment Features**:
+            - 3 default items: fresh_produce (decay=3), dairy (decay=5), frozen (decay=10)
+            - Reward = revenue - purchase_cost - holding_cost - spoilage_cost - stockout_cost
+            - State: inventory levels, average ages, demand estimates, storage utilization
+            - Action: order quantities per item
+    *   **Status**: Implementation complete. Ready for use.
