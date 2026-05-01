@@ -5,6 +5,7 @@
 - label: [agent]
 - injection: informational
 - volatility: evolving
+- scope: project-specific
 - last_checked: 2026-05-01
 <!-- content -->
 
@@ -78,6 +79,13 @@
 - **Follow-up:** Add dedicated tests for stock_management env and simulations module.
 
 ---
+
+## 2026-05-01 — Housekeeping run (Sonnet 4.6)
+- **Task:** Full housekeeping pass per updated HOUSEKEEPING.md workflow (Phase 1–5): project structure review, unit tests, code verification, markdown compliance, report.
+- **Outcome:** 76/87 tests pass; 11 skipped (PyTorch broken — `libtorch_cpu.dylib` missing, not a code issue). All non-torch imports resolve. Dependency network matches disk. Markdown files compliant. Latest Report in HOUSEKEEPING.md updated.
+- **Key decisions:** Torch breakage is an environment issue only — no code changes needed. WORKLOG.md was missing `scope` field; added.
+- **KB changes:** None.
+- **Follow-up:** Reinstall PyTorch in the conda environment to restore 11 skipped tests.
 
 ## 2026-05-01 — Repository markdown cleanup and MD_CONVENTIONS compliance
 - **Task:** Audit all `.md` files for MD_CONVENTIONS compliance and content staleness. Write and execute a multi-session cleanup plan.

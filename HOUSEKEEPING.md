@@ -1,20 +1,62 @@
 # Housekeeping Protocol
 - status: active
-- type: how-to
-- description: Housekeeping protocol for verifying codebase health: dependency network check, unit tests, and latest report generation. Run at the start of any major session.
+- type: workflow
+- description: Recurring codebase health check — dependency network verification, unit tests, bug identification, and markdown compliance. Run at the start of any major session.
 - label: [agent]
 - injection: procedural
 - volatility: stable
+- scope: project-specific
 - last_checked: 2026-05-01
 <!-- content -->
 
-1. Read the AGENTS.md file.
-2. Look at the dependency network of the project, namely which script refers to which one.
-3. Proceed doing different sanity checks and unit tests from root scripts to leaves.
-4. Compile all errors and tests results into a report. Include the author of the report (Claude, Jules, etc). And print that report in the Latest Report subsection below, overwriting previous reports.
-5. Add that report to the AGENTS_LOG.md.
+This workflow defines the recurring health check for the `control_algorithms` codebase. Run it at the start of any major session to confirm the dependency graph is intact, all tests pass, no regressions or bugs have accumulated, markdowns are schema-compliant, and the codebase is in a known good state before making changes.
 
-# Current Project Housekeeping
+The output is a structured report written into the **Latest Report** section below and summarized in `WORKLOG.md`.
+
+## Phase 1 — Review Project Structure
+
+1. Read `README.md` to confirm the current source layout and available components.
+2. Cross-check the **Dependency Network** section below against the actual files on disk — verify all listed modules exist and no new files are missing from the map. Update the Dependency Network section if anything has changed.
+
+## Phase 2 — Unit Tests
+
+3. Run the full test suite from the project root:
+   ```bash
+   python -m pytest tests/ -v
+   ```
+4. Record the total number of tests, pass/fail counts, and any errors or warnings.
+5. For each failing test: identify the root cause (import error, logic bug, missing fixture, etc.) and attempt a fix before proceeding. If the fix is non-trivial, note it in the report and flag for follow-up.
+
+## Phase 3 — Code Verification
+
+6. Trace the dependency tree from root scripts to leaves — confirm all imports resolve correctly and no circular dependencies exist.
+7. Spot-check each module for obvious issues: missing return values, unreachable code, hardcoded paths, or uncaught exceptions at module boundaries.
+8. Verify environment dependencies are importable:
+   ```bash
+   python -c "import numpy, torch, scipy; print('OK')"
+   ```
+
+## Phase 4 — Markdown Compliance
+
+9. Identify all Markdown files in the repository root and in `docs/` (if any):
+   ```bash
+   find . -maxdepth 2 -name "*.md" | sort
+   ```
+10. For each Markdown file that uses the MD_CONVENTIONS schema (i.e., contains a metadata block under its `#` header), verify:
+    - `status`, `type`, and `<!-- content -->` separator are present.
+    - `type` is one of the eight valid values.
+    - No metadata blocks appear on `##` or deeper headers (content/workflow documents).
+    - `description` and `scope` fields are present on content documents.
+    - Any `label` values are drawn from the registered label set.
+11. Note any non-compliant files in the report. Minor issues (missing `scope`, missing `description`) may be fixed in place; structural violations should be flagged for a dedicated fix session.
+
+## Phase 5 — Report
+
+12. Compile all findings into a structured report (see Latest Report format below).
+13. Overwrite the **Latest Report** section with the new report.
+14. Append a brief summary entry to `WORKLOG.md`.
+
+---
 
 ## Dependency Network
 
@@ -53,35 +95,32 @@ The dependency network is mapped and all imports are valid.
 
 ## Latest Report
 
-> **Stale.** This report is from 2026-01-21, before `src/envs/stock_management.py` and `src/simulations/` were added (2026-01-23). File counts and test counts below do not reflect those additions. Re-run housekeeping to get a current report.
-
-**Author:** Claude (Claude Code CLI - Opus 4.5)
-**Execution Date:** 2026-01-21
+**Author:** Claude (Claude Code CLI — Sonnet 4.6)
+**Execution Date:** 2026-05-01
 
 **Test Results:**
-- `python -m pytest tests/ -v`: **PASSED** (87/87 passed in 4.33s)
+- `python -m pytest tests/ -v`: **76 passed, 11 skipped, 0 failed** (1.23s)
+- Skipped: all 11 are PyTorch-dependent (DQN, PPO, ReplayBuffer, TrajectoryBuffer). Root cause: broken torch install — `libtorch_cpu.dylib` missing. Code handles this gracefully via try/except in `seeding.py` and pytest skip markers. Not a code defect.
 
 **Code Verification:**
-- **File Existence:** All 23 source files verified present.
-  - `src/`: 18 files (envs: 5, agents: 6, controllers: 5, utils: 4, root: 3)
+- **File Existence:** All 26 source files verified present.
+  - `src/`: 26 files (envs: 6, agents: 6, controllers: 5, utils: 4, simulations: 2, root: 3)
   - `tests/`: 5 files (test_agents, test_envs, test_math_ops, test_controllers, __init__)
-- **Imports:** All dependencies properly structured.
-- **Dependency Network:** Verified - all imports resolve correctly.
-  - `src/main.py` → `config.py`, `envs/`, `agents/`, `utils/`
-  - `src/envs/homeostasis.py` → `utils/math_ops.py`
-  - `src/agents/bandit.py` → `utils/math_ops.py`
-  - `src/controllers/base.py` → `agents/base.py` (extends BaseAgent)
+- **Imports:** All non-torch imports resolve correctly. `src.config` exports `PRESETS` (4 presets: server_load_dqn, smart_grid_linucb, homeostasis_ppo, server_load_mcts). `src.utils.seeding` exports `set_global_seeds`, `create_rng`, `spawn_rngs`.
+- **Dependency Network:** Verified — all listed modules present on disk, no structural changes since last map.
 - **Environment:**
   - `numpy`: 1.23.5
-  - `torch`: 2.2.2
-  - `pytest`: 7.1.2
   - `scipy`: 1.11.4
+  - `pytest`: 7.1.2
+  - `torch`: BROKEN — `libtorch_cpu.dylib` missing (pre-existing environment issue)
 
-**New Since Last Report:**
-- Added `src/controllers/` module with PID, LQR, and MPC implementations
-- Added `tests/test_controllers.py` with 30 unit tests
-- Updated `AGENTS.md` with controllers documentation
-- Created `AI_AGENTS/CONTROL_AGENT.md` instruction file
+**Markdown Compliance:**
+- `HOUSEKEEPING.md`: Compliant ✓ (updated this session: `type` → `workflow`, added `scope`, added preamble, restructured into phases)
+- `README.md`: Plain project README — no schema metadata expected ✓
+- `WORKLOG.md`: Compliant ✓ (added `scope` field this session)
+
+**Issues Found:**
+1. **torch broken (environment):** `libtorch_cpu.dylib` missing from the conda environment. 11 PyTorch-dependent tests are skipped. All affected code (seeding, DQN, PPO) handles absence gracefully — no code changes needed. Fix: reinstall PyTorch in the conda env.
 
 **Summary:**
-Codebase is **HEALTHY**. All 87 unit tests pass (57 original + 30 new). Dependency network verified.
+Codebase is **HEALTHY** (with environment caveat). 76/87 tests pass; 11 skipped due to a broken PyTorch installation (not a code issue). All non-torch modules import and function correctly. Dependency network matches files on disk. No logic bugs found.
