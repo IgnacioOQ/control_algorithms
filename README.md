@@ -101,13 +101,7 @@ control_algorithms/
 │   ├── test_envs.py
 │   ├── test_agents.py
 │   └── test_controllers.py
-├── docs/                   # Documentation and agent instruction files
-│   ├── CONTROL_ALGORITHMS_EXPLANATION.md  # PID/LQR/MPC background + domain guide
-│   ├── CONTROL_ALGORITHMS_SKILL.md        # Controller implementation spec
-│   ├── RL_SIMULATIONS_REF.md              # Simulation pattern catalog by domain
-│   ├── RL_SIMULATIONS_SKILL.md            # Environment implementation cookbook
-│   ├── Project_Creation_Walkthrough.md
-│   └── REPOSITORY_MD_CLEANUP.md
+├── docs/                   # (migrated to knowledge base — see "For AI Agents" below)
 ├── notebooks/
 ├── logs/
 ├── HOUSEKEEPING.md         # Codebase health protocol
@@ -133,11 +127,11 @@ python -m pytest tests/ -v
 
 ## For AI Agents
 
-Read `HOUSEKEEPING.md` before starting any session — it contains the dependency network, the housekeeping protocol, and the latest codebase health report. Detailed implementation instructions for specific subsystems live in `docs/`:
+Read `HOUSEKEEPING.md` before starting any session — it contains the dependency network, the housekeeping protocol, and the latest codebase health report. Detailed implementation instructions for specific subsystems live in the **knowledge base** — query it with `mcp__kb_mcp__knowledge_base_read` or `mcp__kb_mcp__knowledge_base_search`:
 
-| Document | Use when |
-|----------|----------|
-| `docs/RL_SIMULATIONS_REF.md` | Mapping a new optimization problem to a simulation pattern |
-| `docs/RL_SIMULATIONS_SKILL.md` | Implementing a new environment from scratch |
-| `docs/CONTROL_ALGORITHMS_EXPLANATION.md` | Deciding which controller (PID/LQR/MPC) fits a problem |
-| `docs/CONTROL_ALGORITHMS_SKILL.md` | Implementing remaining controllers (Phase 1.2, Phase 3) |
+| KB path | Use when |
+|---------|----------|
+| `content/reference/RL_SIMULATIONS_REF.md` | Mapping a new optimization problem to a simulation pattern |
+| `content/how-to/RL_SIMULATIONS_SKILL.md` | Implementing a new environment from scratch |
+| `content/explanations/CONTROL_ALGORITHMS_EXPLANATION.md` | Deciding which controller (PID/LQR/MPC) fits a problem |
+| `content/how-to/CONTROL_ALGORITHMS_SKILL.md` | Implementing remaining controllers (Phase 1.2, Phase 3) |
