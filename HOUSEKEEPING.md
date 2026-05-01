@@ -1,4 +1,12 @@
 # Housekeeping Protocol
+- status: active
+- type: how-to
+- description: Housekeeping protocol for verifying codebase health: dependency network check, unit tests, and latest report generation. Run at the start of any major session.
+- label: [agent]
+- injection: procedural
+- volatility: stable
+- last_checked: 2026-05-01
+<!-- content -->
 
 1. Read the AGENTS.md file.
 2. Look at the dependency network of the project, namely which script refers to which one.
@@ -21,6 +29,7 @@ The dependency network is mapped and all imports are valid.
     - `src/envs/server_load.py`
     - `src/envs/smart_grid.py`
     - `src/envs/homeostasis.py`
+    - `src/envs/stock_management.py`
   - `src/agents/__init__.py`
     - `src/agents/base.py`
     - `src/agents/bandit.py`
@@ -34,10 +43,17 @@ The dependency network is mapped and all imports are valid.
   - `src/controllers/pid.py`
   - `src/controllers/lqr.py`
   - `src/controllers/mpc.py`
+- `src/simulations/__init__.py`
+  - `src/simulations/stock_management_sim.py`
+    - `src/envs/stock_management.py`
+    - `src/agents/ppo.py`
+    - `src/controllers/mpc.py`
 - `src/envs/homeostasis.py` -> `src/utils/math_ops.py`
 - `src/agents/bandit.py` -> `src/utils/math_ops.py`
 
 ## Latest Report
+
+> **Stale.** This report is from 2026-01-21, before `src/envs/stock_management.py` and `src/simulations/` were added (2026-01-23). File counts and test counts below do not reflect those additions. Re-run housekeeping to get a current report.
 
 **Author:** Claude (Claude Code CLI - Opus 4.5)
 **Execution Date:** 2026-01-21

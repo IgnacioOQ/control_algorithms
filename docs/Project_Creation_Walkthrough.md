@@ -1,4 +1,12 @@
 # Ab Initio RL Simulation System - Implementation Walkthrough
+- status: active
+- type: log
+- description: Session log documenting the initial implementation of the RL simulation system — environments, agents, utils, and tests created from scratch.
+- label: [agent]
+- injection: informational
+- volatility: stable
+- last_checked: 2026-05-01
+<!-- content -->
 
 ## Summary
 
@@ -42,13 +50,13 @@ control_algorithms/
 
 | Component | File | Highlights |
 |-----------|------|------------|
-| **Server Load** | [server_load.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/envs/server_load.py) | Hybrid DES-stepping, Poisson arrivals, latency/drop rewards |
-| **Smart Grid** | [smart_grid.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/envs/smart_grid.py) | BESS with efficiency losses, OU price, arbitrage rewards |
-| **Homeostasis** | [homeostasis.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/envs/homeostasis.py) | Bergman ODEs, RK4, asymmetric hypo/hyper penalties |
-| **LinUCB** | [bandit.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/agents/bandit.py) | O(d²) Sherman-Morrison, UCB exploration |
-| **DQN** | [dqn.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/agents/dqn.py) | Circular buffer, target network, Double DQN |
-| **MCTS** | [mcts.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/agents/mcts.py) | PUCT selection, rollout, env.copy() support |
-| **PPO** | [ppo.py](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/src/agents/ppo.py) | Actor-Critic, GAE, clipped surrogate |
+| **Server Load** | [server_load.py](../src/envs/server_load.py) | Hybrid DES-stepping, Poisson arrivals, latency/drop rewards |
+| **Smart Grid** | [smart_grid.py](../src/envs/smart_grid.py) | BESS with efficiency losses, OU price, arbitrage rewards |
+| **Homeostasis** | [homeostasis.py](../src/envs/homeostasis.py) | Bergman ODEs, RK4, asymmetric hypo/hyper penalties |
+| **LinUCB** | [bandit.py](../src/agents/bandit.py) | O(d²) Sherman-Morrison, UCB exploration |
+| **DQN** | [dqn.py](../src/agents/dqn.py) | Circular buffer, target network, Double DQN |
+| **MCTS** | [mcts.py](../src/agents/mcts.py) | PUCT selection, rollout, env.copy() support |
+| **PPO** | [ppo.py](../src/agents/ppo.py) | Actor-Critic, GAE, clipped surrogate |
 
 ---
 
@@ -97,4 +105,4 @@ python -m src.main --env homeostasis --agent ppo --episodes 1000
 
 ## Updated Project Files
 
-- ✅ [AGENTS.md](file:///Users/ignacio/Documents/VS%20Code/GitHub%20Repositories/control_algorithms/AGENTS.md) - Updated with project description
+- ✅ [AGENTS.md](../README.md) - Updated with project description
